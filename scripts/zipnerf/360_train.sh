@@ -17,24 +17,21 @@
 
 export CUDA_VISIBLE_DEVICES=0
 
-DATA_DIR=/usr/local/google/home/barron/data/nerf_real_360
+DATA_DIR=$1
+SCENE=$2
 CHECKPOINT_DIR=~/tmp/zipnerf/360
 
-# Outdoor scenes.
-for SCENE in bicycle flowerbed gardenvase stump treehill
-do
-  python -m train \
-    --gin_configs=configs/zipnerf/360.gin \
-    --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
-    --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}/${SCENE}'"
-done
+mkdir -p ${CHECKPOINT_DIR}/${SCENE}
 
-# Indoor scenes.
-for SCENE in fulllivingroom kitchencounter kitchenlego officebonsai
-do
-  python -m train \
-    --gin_configs=configs/zipnerf/360.gin \
-    --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
-    --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}/${SCENE}'" \
-    --gin_bindings="Config.factor = 2" # Important change from outdoor data
-done
+# Outdoor scenes.
+python -m train \
+  --gin_configs=configs/zipnerf/360.gin \
+  --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
+  --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}/${SCENE}'"
+
+# # Indoor scenes.
+# python -m train \
+#   --gin_configs=configs/zipnerf/360.gin \
+#   --gin_bindings="Config.data_dir = '${DATA_DIR}/${SCENE}'" \
+#   --gin_bindings="Config.checkpoint_dir = '${CHECKPOINT_DIR}/${SCENE}'" \
+#   --gin_bindings="Config.factor = 2" # Important change from outdoor data
